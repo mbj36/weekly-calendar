@@ -2,7 +2,13 @@ import React from "react";
 import { Flex, Heading, Button, Stack } from "@chakra-ui/react";
 import { format, addWeeks } from "date-fns";
 
-function Navbar({ currentWeek, setCurrentWeekDate }) {
+function Navbar({
+    currentWeek,
+    setCurrentWeekDate,
+}: {
+    currentWeek: Date;
+    setCurrentWeekDate: (date: Date) => void;
+}) {
     return (
         <Flex
             as="nav"
