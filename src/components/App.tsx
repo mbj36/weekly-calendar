@@ -3,6 +3,7 @@ import Navbar from "./Navbar/Navbar";
 import { useCalendar } from "../hooks/useCalendar";
 import DayCalendar from "./DayCalendar/DayCalendar";
 import { Stack } from "@chakra-ui/react";
+import { Day } from "./DayCalendar/DayCalendar.types";
 
 function App() {
     const {
@@ -20,11 +21,16 @@ function App() {
             />
 
             <Stack spacing="1px" direction="row">
-                {days.map((day, index) => {
-                    return (
-                        <DayCalendar key={index} day={day} time={timeList} />
-                    );
-                })}
+                {days &&
+                    days.map((day: Day, index: number) => {
+                        return (
+                            <DayCalendar
+                                key={index}
+                                day={day}
+                                time={timeList}
+                            />
+                        );
+                    })}
             </Stack>
         </div>
     );

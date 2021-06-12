@@ -7,10 +7,23 @@ import {
     startOfDay,
     addDays,
 } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { events } from "../utils/utils";
+import { get, set } from "idb-keyval";
+import { EventType } from "../components/DayCalendar/DayCalendar.types";
 
 export const useCalendar = () => {
+    const [eventsFromIndexDB, setEvents] = useState<EventType[] | null>(null);
+    useEffect(() => {
+        set("events", events).then(() =>
+            console.log("Data pushed into IndexDB")
+        );
+    }, []);
+
+    useEffect(() => {
+        get("events").then(value => setEvents(value));
+    }, []);
+
     const [currentWeekDate, setCurrentWeekDate] = useState(
         startOfISOWeek(new Date())
     );
@@ -31,24 +44,27 @@ export const useCalendar = () => {
     const days = [];
 
     for (let i = 0; i < 7; i++) {
-        days.push({
-            day: format(addDays(currentWeekDate, i), "dd/MM"),
-            dayName: format(addDays(currentWeekDate, i), "EEEEEE"),
-            date: format(addDays(currentWeekDate, i), "eee LLL dd yyyy"),
-            events: events.filter(event => {
-                const date = format(
-                    addDays(currentWeekDate, i),
-                    "eee LLL dd yyyy"
-                );
+        if (eventsFromIndexDB) {
+            days.push({
+                day: format(addDays(currentWeekDate, i), "dd/MM"),
+                dayName: format(addDays(currentWeekDate, i), "EEEEEE"),
+                date: format(addDays(currentWeekDate, i), "eee LLL dd yyyy"),
+                events: eventsFromIndexDB.filter(event => {
+                    const date = format(
+                        addDays(currentWeekDate, i),
+                        "eee LLL dd yyyy"
+                    );
 
-                if (
-                    formatISO(new Date(event.fromTs).setHours(0, 0, 0, 0)) ===
-                    formatISO(new Date(date))
-                ) {
-                    return event;
-                }
-            }),
-        });
+                    if (
+                        formatISO(
+                            new Date(event.fromTs).setHours(0, 0, 0, 0)
+                        ) === formatISO(new Date(date))
+                    ) {
+                        return event;
+                    }
+                }),
+            });
+        }
     }
 
     return {

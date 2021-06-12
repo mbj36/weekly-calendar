@@ -26,17 +26,19 @@ function DayCalendar({ day, time }: { day: Day; time: Array<string> }) {
 
             <Stack direction="column">
                 {time.map((t: string) => {
-                    const slot = day.events.filter(event => {
-                        const time = getHours(event.fromTs);
+                    const slot =
+                        day &&
+                        day?.events?.filter(event => {
+                            const time = getHours(event.fromTs);
 
-                        if (time === getHours(new Date(t))) {
-                            return event;
-                        }
-                    });
+                            if (time === getHours(new Date(t))) {
+                                return event;
+                            }
+                        });
 
                     return (
                         <p className="time" key={t}>
-                            {slot.map(s => {
+                            {slot?.map(s => {
                                 return (
                                     <Box
                                         key={s.fromTs}

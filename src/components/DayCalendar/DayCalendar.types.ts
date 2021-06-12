@@ -2,7 +2,7 @@ export type Day = {
     day: string;
     dayName: string;
     date: string;
-    events: Array<EventType>;
+    events: Array<EventType> | null;
 };
 
 export type EventType = {
